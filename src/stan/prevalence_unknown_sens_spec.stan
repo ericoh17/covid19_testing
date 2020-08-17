@@ -20,9 +20,9 @@ parameters {
   real<offset = mu_logit_prev, multiplier = sigma_logit_prev> logit_prev;
 }
 transformed parameters {
-  real spec = inv_logit(logit_spec);
-  real sens = inv_logit(logit_sens);
-  real prev = inv_logit(logit_prev);
+  real<lower = 0, upper = 1> spec = inv_logit(logit_spec);
+  real<lower = 0, upper = 1> sens = inv_logit(logit_sens);
+  real<lower = 0, upper = 1> prev = inv_logit(logit_prev);
 }
 model {
   //likelihood

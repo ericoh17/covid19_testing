@@ -12,7 +12,7 @@ parameters {
   real<offset = mu_logit_prev, multiplier = sigma_logit_prev> logit_prev;
 }
 transformed parameters {
-  real prev = inv_logit(logit_prev);
+  real<lower = 0, upper = 1> prev = inv_logit(logit_prev);
 }
 model {
   //likelihood
