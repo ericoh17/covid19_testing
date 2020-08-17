@@ -57,8 +57,6 @@ prev_model_unknown <- cmdstan_model("src/stan/prevalence_unknown_sens_spec.stan"
 
 prev_model_unknown_data <- list(status = sum(meas_status),
                                 n_samp = n_samp,
-                                sens = true_sens,
-                                spec = true_spec,
                                 logit_spec_prior_scale = 0.5,
                                 logit_sens_prior_scale = 0.5,
                                 logit_prev_prior_scale = 0.5)
