@@ -4,6 +4,7 @@ data {
   real<lower = 0, upper = 1> sens;
   real<lower = 0, upper = 1> spec;
   real<lower = 0> logit_prev_prior_scale;
+  real mu_logit_prev_mean;
 }
 parameters {
   real mu_logit_prev;
@@ -20,5 +21,5 @@ model {
   // priors
   logit_prev ~ normal(mu_logit_prev, sigma_logit_prev);
   sigma_logit_prev ~ normal(0, logit_prev_prior_scale);
-  mu_logit_prev ~ normal(-5.5, 2); 
+  mu_logit_prev ~ normal(mu_logit_prev_mean, 1); 
 }

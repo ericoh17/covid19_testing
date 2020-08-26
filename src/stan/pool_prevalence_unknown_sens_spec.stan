@@ -5,6 +5,7 @@ data {
   real<lower = 0> logit_spec_prior_scale;
   real<lower = 0> logit_sens_prior_scale;
   real<lower = 0> logit_prev_prior_scale;
+  real mu_logit_prev_mean;
 }
 parameters {
   // specificity
@@ -33,13 +34,13 @@ model {
   // specificity
   logit_spec ~ normal(mu_logit_spec, sigma_logit_spec);
   sigma_logit_spec ~ normal(0, logit_spec_prior_scale);
-  mu_logit_spec ~ normal(4, 2);
+  mu_logit_spec ~ normal(5, 1);
   // sensitivity
   logit_sens ~ normal(mu_logit_sens, sigma_logit_sens);
   sigma_logit_sens ~ normal(0, logit_sens_prior_scale);
-  mu_logit_sens ~ normal(4, 2); 
+  mu_logit_sens ~ normal(3, 1); 
   // prevalence
   logit_prev ~ normal(mu_logit_prev, sigma_logit_prev);
   sigma_logit_prev ~ normal(0, logit_prev_prior_scale);
-  mu_logit_prev ~ normal(-5.5, 2); 
+  mu_logit_prev ~ normal(mu_logit_prev_mean, 1); 
 }
