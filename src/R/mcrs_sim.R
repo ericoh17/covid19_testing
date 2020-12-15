@@ -16,7 +16,7 @@ if (pool_ind == TRUE) {
   num_pool_vec <- c(5, 10)
   
   # Stan model
-  prev_model_known <- cmdstan_model("../stan/pool_prevalence_mcrs_mrp_known_sens_spec.stan")
+  prev_model_known <- cmdstan_model("../stan/mcrs_pool_mrp.stan")
   
 } else {
   
@@ -24,7 +24,7 @@ if (pool_ind == TRUE) {
   num_pool_vec <- c(1)
   
   # Stan model
-  prev_model_known <- cmdstan_model("../stan/prevalence_mcrs_mrp_known_sens_spec.stan")
+  prev_model_known <- cmdstan_model("../stan/mcrs_mrp.stan")
   
 }
 
