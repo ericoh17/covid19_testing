@@ -1,6 +1,6 @@
-# COVID-19 Testing
+# MRP Testing
 
-Comparison of different sampling and estimation strategies for COVID-19 prevalence
+Comparison of different sampling and estimation strategies for disease prevalence
 
 ## Simulations
 
