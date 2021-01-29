@@ -5,10 +5,16 @@ n_test <- as.numeric(args[1])
 
 # prob of positive test for avg 
 # person in sample
-beta_1 <- as.numeric(args[2])
+beta_0 <- as.numeric(args[2])
 
 # pooling indicator
 pool_ind <- args[3]
+
+library(renv)
+renv::restore()
+
+library(cmdstanr)
+library(posterior)
 
 if (pool_ind == TRUE) {
 
@@ -27,12 +33,6 @@ if (pool_ind == TRUE) {
   prev_model_known <- cmdstan_model("../stan/mcrs_mrp.stan")
   
 }
-
-library(renv)
-renv::restore()
-
-library(cmdstanr)
-library(posterior)
 
 set.seed(754893)
 options(scipen = 999)
@@ -85,17 +85,17 @@ pop_cov$x_clust <- x_clust
 pop_cov$x_clust_scale <- x_clust_scale
 
 # prevalence parameters
-beta_2 <- 0.5
-beta_3 <- 0.3
+beta_1 <- 0.5
+beta_2 <- 0.3
 
-true_prev <- beta_1 + beta_2 * gender
+true_prev <- beta_0 + beta_1 * gender
 
 age_re <- rnorm(n_age, 0, 0.5)
 race_re <- rnorm(n_race, 0, 0.5)
 clust_re <- rnorm(n_clust, 0, 0.5)
 
 for (clust_ind in 1:n_clust) {
-  true_prev[clust == clust_ind] <- true_prev[clust == clust_ind] + beta_3 * x_clust_scale[clust_ind] + clust_re[clust_ind]
+  true_prev[clust == clust_ind] <- true_prev[clust == clust_ind] + beta_2 * x_clust_scale[clust_ind] + clust_re[clust_ind]
 }
 
 for (age_ind in 1:n_age) {
@@ -208,7 +208,7 @@ for (num_pool in num_pool_vec) {
                                     num_ps = num_ps,
                                     ps_pop = ps_pop,
                                     coef_prior_scale = 0.5,
-                                    beta_1_mu = beta_1,
+                                    beta_0_mu = beta_0,
                                     sens = true_sens,
                                     spec = true_spec)
       
@@ -253,7 +253,7 @@ for (num_pool in num_pool_vec) {
                                     num_ps = num_ps,
                                     ps_pop = ps_pop,
                                     coef_prior_scale = 0.5,
-                                    beta_1_mu = beta_1,
+                                    beta_0_mu = beta_0,
                                     sens = true_sens,
                                     spec = true_spec)
       
@@ -303,14 +303,14 @@ for (num_pool in num_pool_vec) {
 if (pool_ind == TRUE) {
   
   write.csv(prev_mat,
-            paste0("../../results/pooling/mcrs_n_test_", n_test, 
+            paste0("../../mcrs_pooling_n_test_", n_test, 
                    "_true_prev_", round(true_prev_mean, 3), "_results.csv"),
             row.names = FALSE)
   
 } else {
   
   write.csv(prev_mat,
-            paste0("../../results/no_pooling/mcrs_n_test_", n_test, 
+            paste0("../../mcrs_no_pooling_n_test_", n_test, 
                    "_true_prev_", round(true_prev_mean, 3), "_results.csv"),
             row.names = FALSE)
 

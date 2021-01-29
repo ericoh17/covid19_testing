@@ -12,7 +12,7 @@ data {
   int<lower = 0> num_ps;  
   vector<lower = 0>[num_ps] ps_pop;
   real<lower = 0> coef_prior_scale;
-  real beta_1_mu;
+  real beta_0_mu;
   real<lower = 0, upper = 1> sens;
   real<lower = 0, upper = 1> spec;
 }
@@ -47,7 +47,7 @@ model {
   alpha_age ~ normal(0, sigma_age);
   alpha_clust ~ normal(0, sigma_clust);
   // beta priors
-  beta[1] ~ normal(beta_1_mu, 1);
+  beta[1] ~ normal(beta_0_mu, 1);
   beta[2] ~ normal(0, 1);
   beta[3] ~ normal(0, 1); 
   // hyperpriors for random intercepts

@@ -1,12 +1,12 @@
 data {
   int<lower = 0> n_samp;  
   int<lower = 0, upper = 1> status[n_samp]; 
-  int<lower = 1, upper = 4> race[n_samp];  /
+  int<lower = 1, upper = 4> race[n_samp];
   int<lower = 1, upper = 4> age[n_samp];  
   int<lower = 0> num_ps;  
   vector<lower = 0>[num_ps] ps_pop;
   real<lower = 0> coef_prior_scale;
-  real beta_mu;
+  real beta_0_mu;
   real<lower = 0, upper = 1> sens;
   real<lower = 0, upper = 1> spec;
 }
@@ -28,7 +28,7 @@ model {
   alpha_race ~ normal(0, sigma_race);
   alpha_age ~ normal(0, sigma_age);
   // beta priors
-  beta ~ normal(beta_mu, 1);
+  beta ~ normal(beta_0_mu, 1);
   // hyperpriors for random intercepts
   sigma_race ~ normal(0, coef_prior_scale);
   sigma_age ~ normal(0, coef_prior_scale);

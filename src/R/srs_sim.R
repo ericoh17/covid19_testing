@@ -5,10 +5,16 @@ n_test <- as.numeric(args[1])
 
 # prob of positive test for avg 
 # person in sample
-beta_1 <- as.numeric(args[2])
+beta_0 <- as.numeric(args[2])
 
 # pooling indicator
 pool_ind <- args[3]
+
+library(renv)
+renv::restore()
+
+library(cmdstanr)
+library(posterior)
 
 if (pool_ind == TRUE) {
   
@@ -27,12 +33,6 @@ if (pool_ind == TRUE) {
   prev_model_known <- cmdstan_model("../stan/srs_mrp.stan")
   
 }
-
-library(renv)
-renv::restore()
-
-library(cmdstanr)
-library(posterior)
 
 set.seed(754893)
 options(scipen = 999)
@@ -64,7 +64,7 @@ pop_cov_count <- aggregate(count ~ race + age, data = pop_cov, FUN = length)
 pop_cov <- pop_cov[,-ncol(pop_cov)]
 
 # prevalence
-pop_cov$true_prev <- invlogit(beta_1)
+pop_cov$true_prev <- invlogit(beta_0)
 true_prev_mean <- mean(pop_cov$true_prev)
 
 # create poststratification table  
@@ -129,7 +129,7 @@ for (num_pool in num_pool_vec) {
                                     num_ps = num_ps,
                                     ps_pop = ps_pop,
                                     coef_prior_scale = 0.5,
-                                    beta_mu = beta,
+                                    beta_0_mu = beta_0,
                                     sens = true_sens,
                                     spec = true_spec)
       
@@ -156,7 +156,7 @@ for (num_pool in num_pool_vec) {
                                     num_ps = num_ps,
                                     ps_pop = ps_pop,
                                     coef_prior_scale = 0.5,
-                                    beta_mu = beta,
+                                    beta_0_mu = beta_0,
                                     sens = true_sens,
                                     spec = true_spec)
       
@@ -205,14 +205,14 @@ for (num_pool in num_pool_vec) {
 if (pool_ind == TRUE) {
   
   write.csv(prev_mat,
-            paste0("../../results/pooling/srs_n_test_", n_test, 
+            paste0("../../srs_pooling_n_test_", n_test, 
                    "_true_prev_", round(true_prev_mean, 3), "_results.csv"),
             row.names = FALSE)
   
 } else {
   
   write.csv(prev_mat,
-            paste0("../../results/no_pooling/srs_n_test_", n_test, 
+            paste0("../../srs_no_pooling_n_test_", n_test, 
                    "_true_prev_", round(true_prev_mean, 3), "_results.csv"),
             row.names = FALSE)
   

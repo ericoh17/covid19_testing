@@ -5,10 +5,16 @@ n_test <- as.numeric(args[1])
 
 # prob of positive test for avg 
 # person in sample
-beta_1 <- as.numeric(args[2])
+beta_0 <- as.numeric(args[2])
 
 # pooling indicator
 pool_ind <- args[3]
+
+library(renv)
+renv::restore()
+
+library(cmdstanr)
+library(posterior)
 
 if (pool_ind == TRUE) {
   
@@ -27,12 +33,6 @@ if (pool_ind == TRUE) {
   prev_model_known <- cmdstan_model("../stan/strs_mrp.stan")
   
 }
-
-library(renv)
-renv::restore()
-
-library(cmdstanr)
-library(posterior)
 
 set.seed(754893)
 options(scipen = 999)
@@ -82,17 +82,16 @@ pop_cov$x_geo <- x_geo
 pop_cov$x_geo_scale <- x_geo_scale
 
 # prevalence parameters
-beta_1 <- -5.5
-beta_2 <- 0.25
-beta_3 <- 0.5
+beta_1 <- 0.25
+beta_2 <- 0.5
 
-true_prev <- beta_1 + beta_2 * gender
+true_prev <- beta_0 + beta_1 * gender
 
 race_re <- rnorm(n_race, 0, 0.5)
 geo_re <- rnorm(n_geo, 0, 0.5)
 
 for (geo_ind in 1:n_geo) {
-  true_prev[geo == geo_ind] <- true_prev[geo == geo_ind] + beta_3 * x_geo_scale[geo_ind] + geo_re[geo_ind]
+  true_prev[geo == geo_ind] <- true_prev[geo == geo_ind] + beta_2 * x_geo_scale[geo_ind] + geo_re[geo_ind]
 }
 
 for (race_ind in 1:n_race) {
@@ -170,16 +169,16 @@ for (num_pool in num_pool_vec) {
     
   }
   
-  prev_known_median_mat <- matrix(NA, nrow = 500, ncol = 1)
-  prev_known_mean_mat <- matrix(NA, nrow = 500, ncol = 1)
-  prev_known_mad_mat <- matrix(NA, nrow = 500, ncol = 1)
-  prev_known_sd_mat <- matrix(NA, nrow = 500, ncol = 1)
-  spin_lower_mat <- matrix(NA, nrow = 500, ncol = 1)
-  spin_upper_mat <- matrix(NA, nrow = 500, ncol = 1)
-  cp_known_mat <- matrix(NA, nrow = 500, ncol = 1)
-  power_known_mat <- matrix(NA, nrow = 500, ncol = 1)
+  prev_known_median_mat <- matrix(NA, nrow = 2, ncol = 1)
+  prev_known_mean_mat <- matrix(NA, nrow = 2, ncol = 1)
+  prev_known_mad_mat <- matrix(NA, nrow = 2, ncol = 1)
+  prev_known_sd_mat <- matrix(NA, nrow = 2, ncol = 1)
+  spin_lower_mat <- matrix(NA, nrow = 2, ncol = 1)
+  spin_upper_mat <- matrix(NA, nrow = 2, ncol = 1)
+  cp_known_mat <- matrix(NA, nrow = 2, ncol = 1)
+  power_known_mat <- matrix(NA, nrow = 2, ncol = 1)
   
-  for (i in 1:500) {
+  for (i in 1:2) {
     
     # get n_samp_strat samples from each strata
     samp_pop_lst <- mapply(select_stratified_srs, 
@@ -208,7 +207,7 @@ for (num_pool in num_pool_vec) {
                                     num_ps = num_ps,
                                     ps_pop = ps_pop,
                                     coef_prior_scale = 0.5,
-                                    beta_1_mu = beta_1,
+                                    beta_0_mu = beta_0,
                                     sens = true_sens,
                                     spec = true_spec)
       
@@ -247,7 +246,7 @@ for (num_pool in num_pool_vec) {
                                     num_ps = num_ps,
                                     ps_pop = ps_pop,
                                     coef_prior_scale = 0.5,
-                                    beta_1_mu = beta_1,
+                                    beta_0_mu = beta_0,
                                     sens = true_sens,
                                     spec = true_spec)
       
@@ -294,17 +293,18 @@ for (num_pool in num_pool_vec) {
   
 }
 
+
 if (pool_ind == TRUE) {
   
   write.csv(prev_mat,
-            paste0("../../results/pooling/strs_n_test_", n_test, 
+            paste0("../../strs_pooling_n_test_", n_test, 
                    "_true_prev_", round(true_prev_mean, 3), "_results.csv"),
             row.names = FALSE)
   
 } else {
   
   write.csv(prev_mat,
-            paste0("../../results/no_pooling/strs_n_test_", n_test, 
+            paste0("../../strs_no_pooling_n_test_", n_test, 
                    "_true_prev_", round(true_prev_mean, 3), "_results.csv"),
             row.names = FALSE)
   
