@@ -169,16 +169,16 @@ for (num_pool in num_pool_vec) {
     
   }
   
-  prev_known_median_mat <- matrix(NA, nrow = 2, ncol = 1)
-  prev_known_mean_mat <- matrix(NA, nrow = 2, ncol = 1)
-  prev_known_mad_mat <- matrix(NA, nrow = 2, ncol = 1)
-  prev_known_sd_mat <- matrix(NA, nrow = 2, ncol = 1)
-  spin_lower_mat <- matrix(NA, nrow = 2, ncol = 1)
-  spin_upper_mat <- matrix(NA, nrow = 2, ncol = 1)
-  cp_known_mat <- matrix(NA, nrow = 2, ncol = 1)
-  power_known_mat <- matrix(NA, nrow = 2, ncol = 1)
+  prev_known_median_mat <- matrix(NA, nrow = 500, ncol = 1)
+  prev_known_mean_mat <- matrix(NA, nrow = 500, ncol = 1)
+  prev_known_mad_mat <- matrix(NA, nrow = 500, ncol = 1)
+  prev_known_sd_mat <- matrix(NA, nrow = 500, ncol = 1)
+  spin_lower_mat <- matrix(NA, nrow = 500, ncol = 1)
+  spin_upper_mat <- matrix(NA, nrow = 500, ncol = 1)
+  cp_known_mat <- matrix(NA, nrow = 500, ncol = 1)
+  power_known_mat <- matrix(NA, nrow = 500, ncol = 1)
   
-  for (i in 1:2) {
+  for (i in 1:500) {
     
     # get n_samp_strat samples from each strata
     samp_pop_lst <- mapply(select_stratified_srs, 
