@@ -48,15 +48,14 @@ n_pop <- 20000
 
 # generate population characteristics #
 
-# gender: 0 (female), 1 (male)
+# gender
 gender <- sample(rep(c(0,1), c(10000, 10000)))
 
-# race: 1 (white), 2 (black), 3 (hispanic), 4 (other)
+# race
 n_race <- 4
 race <- sample(rep(1:n_race, c(10000, 6000, 2000, 2000)))
 
 # geographic variable
-# (e.g. university buildings of residence)
 n_geo <- 10
 geo <- sample(1:n_geo, n_pop, replace = TRUE,
               prob = seq(0.3, 0.1, length.out = 10))
@@ -72,7 +71,6 @@ pop_cov <- pop_cov[,-ncol(pop_cov)]
 pop_cov$id <- 1:nrow(pop_cov)
 
 # geographic level covariate
-# (e.g. % of students in building that are athletes)
 x_geo <- rnorm(n_geo, 50, 20)
 
 # standardize covariate

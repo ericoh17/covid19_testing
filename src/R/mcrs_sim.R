@@ -48,19 +48,18 @@ n_pop <- 200000
 
 # generate population characteristics #
 
-# gender: 0 (female), 1 (male)
+# gender
 gender <- sample(rep(c(0,1), c(100000, 100000)))
 
-# race: 1 (white), 2 (black), 3 (hispanic), 4 (other)
+# race
 n_race <- 4
 race <- sample(rep(1:n_race, c(100000, 60000, 20000, 20000)))
 
-# age: 1 (< 21), 2 (21 - 40), 3 (41 - 60), 4 (> 60)
+# age
 n_age <- 4
 age <- sample(rep(1:n_age, c(20000, 40000, 120000, 20000)))
 
-# clusters (e.g. census blocks groups)
-# assume 0 pop census blocks groups not included
+# clusters
 n_clust <- 80
 clust <- sample(1:n_clust, n_pop, replace = TRUE)
 
@@ -75,7 +74,6 @@ pop_cov <- pop_cov[,-ncol(pop_cov)]
 pop_cov$id <- 1:nrow(pop_cov)
 
 # geographic level covariate
-# (e.g. median income in block group)
 x_clust <- rnorm(n_clust, 50000, 20000)
 
 # standardize covariate

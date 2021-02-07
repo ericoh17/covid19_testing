@@ -48,11 +48,11 @@ n_pop <- 1000
 
 # generate population characteristics #
 
-# race: 1 (white), 2 (black), 3 (hispanic), 4 (other)
+# race
 n_race <- 4
 race <- sample(rep(1:n_race, c(500, 300, 100, 100)))
 
-# age: 1 (21 - 40), 2 (41 - 60), 3 (> 60)
+# age
 n_age <- 4
 age <- sample(rep(1:n_age, c(100, 200, 600, 100)))
 
@@ -64,7 +64,20 @@ pop_cov_count <- aggregate(count ~ race + age, data = pop_cov, FUN = length)
 pop_cov <- pop_cov[,-ncol(pop_cov)]
 
 # prevalence
-pop_cov$true_prev <- invlogit(beta_0)
+true_prev <- invlogit(beta_0)
+
+age_re <- rnorm(n_age, 0, 0.5)
+race_re <- rnorm(n_race, 0, 0.5)
+
+for (age_ind in 1:n_age) {
+  true_prev[age == age_ind] <- true_prev[age == age_ind] + age_re[age_ind]
+}
+
+for (race_ind in 1:n_race) {
+  true_prev[race == race_ind] <- true_prev[race == race_ind] + race_re[race_ind]
+}
+
+pop_cov$true_prev <- invlogit(true_prev)
 true_prev_mean <- mean(pop_cov$true_prev)
 
 # create poststratification table  
